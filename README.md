@@ -1,3 +1,6 @@
+
+<img width="100" height="100" alt="Frame 1 (1)" src="https://github.com/user-attachments/assets/d6862ce3-91bf-45ba-8a8b-5243d558945f" />
+
 # Boosters
 
 A Fabric performance mod for Minecraft 26.2:
