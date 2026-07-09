@@ -1,0 +1,42 @@
+{
+	"schemaVersion": 1,
+	"id": "boosters",
+	"version": "${version}",
+	"name": "Boosters",
+	"description": "Boosts FPS/TPS by throttling distant mob AI, culling entities, throttling block entities and particles - without stepping on Sodium/Lithium/EntityCulling's toes.",
+	"authors": [
+		"Kirxishere"
+	],
+	"contact": {},
+	"license": "MIT",
+	"icon": "assets/boosters/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.boosters.BoostersMod"
+		],
+		"client": [
+			"com.boosters.client.BoostersModClient"
+		],
+		"modmenu": [
+			"com.boosters.client.BoostersModMenuIntegration"
+		]
+	},
+	"mixins": [
+		"boosters.mixins.json",
+		{
+			"config": "boosters.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.19.3",
+		"minecraft": "~26.2",
+		"java": ">=25",
+		"fabric-api": "*",
+		"cloth-config": "*"
+	},
+	"recommends": {
+		"modmenu": "*"
+	}
+}
