@@ -5,6 +5,7 @@ import com.boosters.BoostersStats;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.DebugScreenOverlay;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -15,16 +16,25 @@ import java.util.List;
  * Appends a live status line to the F3 debug screen's world-info column showing
  * what Boosters is actually doing right now (not just that it's installed) - how
  * many AI steps/block entity ticks/entities/particles it skipped in the last second.
- * extractLines(..., false) builds the right-hand (world info) column; injecting at
- * HEAD lets us append before vanilla renders the already-populated line list.
+ *
+ * <p>{@code extractLines} runs every frame regardless of whether the debug screen is
+ * actually visible - Gui#extractRenderState builds it unconditionally as part of the
+ * normal HUD state pass, it's only the drawing that's conditional. Without an explicit
+ * {@link #showDebugScreen()} check here, this used to string-concatenate 4 lines and
+ * allocate a new list entry on every single rendered frame, forever, even with F3
+ * closed - a much bigger, always-on cost than the (already fixed) per-tick throttle
+ * checks. This was almost certainly the actual cause of the measured FPS regression.
  */
 @Mixin(DebugScreenOverlay.class)
 public abstract class DebugScreenStatusMixin {
 
+	@Shadow
+	public abstract boolean showDebugScreen();
+
 	@Inject(method = "extractLines", at = @At("HEAD"))
 	private void boosters$appendStatusLine(GuiGraphicsExtractor extractor, List<String> lines, boolean isLeftColumn,
 			CallbackInfo ci) {
-		if (isLeftColumn || !BoostersConfig.get().showF3Status) {
+		if (isLeftColumn || !showDebugScreen() || !BoostersConfig.get().showF3Status) {
 			return;
 		}
 

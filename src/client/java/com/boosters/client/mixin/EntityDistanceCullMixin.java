@@ -32,10 +32,11 @@ public abstract class EntityDistanceCullMixin {
 		double dy = entity.getY() - camY;
 		double dz = entity.getZ() - camZ;
 		double distSq = dx * dx + dy * dy + dz * dz;
-		double maxDistSq = config.entityCullingMaxDistance * config.entityCullingMaxDistance;
+		double maxDist = config.entityCullingMaxDistance * ModCompat.distanceMultiplier();
+		double maxDistSq = maxDist * maxDist;
 
 		if (distSq > maxDistSq) {
-			BoostersStats.entitiesCulled.incrementAndGet();
+			BoostersStats.incrementEntitiesCulled();
 			cir.setReturnValue(false);
 		}
 	}

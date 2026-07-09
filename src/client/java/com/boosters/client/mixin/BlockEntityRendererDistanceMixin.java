@@ -1,6 +1,7 @@
 package com.boosters.client.mixin;
 
 import com.boosters.BoostersConfig;
+import com.boosters.compat.ModCompat;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -25,7 +26,7 @@ public interface BlockEntityRendererDistanceMixin {
 			return;
 		}
 
-		int scaled = (int) Math.max(8, Math.round(64 * config.blockEntityRendererDistanceMultiplier));
+		int scaled = (int) Math.max(8, Math.round(64 * config.blockEntityRendererDistanceMultiplier * ModCompat.distanceMultiplier()));
 		cir.setReturnValue(scaled);
 	}
 }
