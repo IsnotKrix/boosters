@@ -22,25 +22,25 @@ public final class BoostersConfig {
 	// --- Mob AI throttling (server/logic side, works in singleplayer too) ---
 	public boolean enableAiThrottle = true;
 	/** Distance from the nearest player (blocks) at which AI throttling starts kicking in. */
-	public int aiThrottleStartDistance = 32;
+	public int aiThrottleStartDistance = 24;
 	/** Distance at which AI throttling reaches its maximum (slowest) interval. */
-	public int aiThrottleMaxDistance = 128;
+	public int aiThrottleMaxDistance = 96;
 	/** How many ticks between goal-selector updates for the closest throttled mobs. */
-	public int aiThrottleIntervalTicks = 2;
+	public int aiThrottleIntervalTicks = 3;
 	/** How many ticks between goal-selector updates for the farthest mobs (at/beyond max distance). */
-	public int aiThrottleMaxIntervalTicks = 10;
+	public int aiThrottleMaxIntervalTicks = 16;
 
 	// --- Client-side entity render culling ---
 	public boolean enableEntityCulling = true;
 	/** Entities farther than this from the camera are never rendered, regardless of visibility. */
-	public double entityCullingMaxDistance = 96.0;
+	public double entityCullingMaxDistance = 72.0;
 	/** Beyond this distance, skip nameplates/extra decoration rendering even if the entity itself is drawn. */
-	public double entityDetailCullDistance = 48.0;
+	public double entityDetailCullDistance = 32.0;
 
 	// --- Block entity (chest, furnace, sign, etc.) tick throttling ---
 	public boolean enableBlockEntityThrottle = true;
-	public int blockEntityThrottleStartDistance = 48;
-	public int blockEntityThrottleIntervalTicks = 4;
+	public int blockEntityThrottleStartDistance = 32;
+	public int blockEntityThrottleIntervalTicks = 6;
 	/**
 	 * Block entity type names (substring match) that are never throttled because
 	 * players notice their timing directly (item movement, redstone, animations).
@@ -51,18 +51,24 @@ public final class BoostersConfig {
 	// --- Particle reduction (client-side) ---
 	public boolean enableParticleReduction = true;
 	/** Fraction of particles that are actually allowed to spawn, 0.0-1.0. */
-	public double particleDensityMultiplier = 0.5;
+	public double particleDensityMultiplier = 0.35;
 	/** Particles requested farther than this from the camera are always dropped. */
-	public double particleCullDistance = 32.0;
+	public double particleCullDistance = 24.0;
 
 	// --- Block entity renderer (chest lids, sign text, skulls, ...) view distance ---
 	public boolean enableBlockEntityRendererCulling = true;
 	/** Multiplier applied to vanilla's default 64-block BER view distance (0.1-1.0). */
-	public double blockEntityRendererDistanceMultiplier = 0.5;
+	public double blockEntityRendererDistanceMultiplier = 0.35;
 
 	// --- Compatibility with other optimization mods ---
 	/** When a dedicated entity-culling mod is detected, let it own culling instead of fighting it. */
 	public boolean deferToDedicatedEntityCullingMods = true;
+	/**
+	 * When Sodium is detected, pull all distance thresholds in further (see
+	 * {@code ModCompat#distanceMultiplier()}). Sodium removes the GPU-side rendering
+	 * bottleneck, so throttling the CPU-side work harder pays off more with it installed.
+	 */
+	public boolean extraAggressiveWithSodium = true;
 
 	// --- F3 debug screen status line ---
 	public boolean showF3Status = true;

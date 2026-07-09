@@ -14,7 +14,11 @@ import net.fabricmc.loader.api.FabricLoader;
  */
 public final class ModCompat {
 
+	/** How much tighter to pull in our own distance thresholds when Sodium is present. */
+	private static final double SODIUM_DISTANCE_MULTIPLIER = 0.75;
+
 	private static boolean entityCullingModPresent;
+	private static boolean sodiumPresent;
 	private static boolean initialized;
 
 	private ModCompat() {
@@ -28,8 +32,8 @@ public final class ModCompat {
 
 		FabricLoader loader = FabricLoader.getInstance();
 		entityCullingModPresent = loader.isModLoaded("entityculling");
+		sodiumPresent = loader.isModLoaded("sodium");
 
-		logIfPresent(loader, "sodium", "renderer - no conflict with our mixins");
 		logIfPresent(loader, "lithium", "game logic optimization - Boosters's AI throttle is additive, not a duplicate");
 		logIfPresent(loader, "c2me", "chunk generation/loading - different subsystem, no conflict");
 		logIfPresent(loader, "starlight", "lighting engine - different subsystem, no conflict");
@@ -39,6 +43,17 @@ public final class ModCompat {
 		if (entityCullingModPresent) {
 			BoostersMod.LOGGER.info(
 					"Detected a dedicated entity-culling mod (entityculling) - Boosters is disabling its own entity culling to avoid duplicating it.");
+		}
+		if (sodiumPresent) {
+			BoostersMod.LOGGER.info(
+					"Detected Sodium - Boosters is pulling its own distance thresholds in by {}x. Sodium already removes "
+							+ "the GPU-side rendering bottleneck, so the CPU-side work Boosters targets (AI, entities, "
+							+ "particles) becomes relatively more of the remaining cost; throttling it harder pays off more.",
+					SODIUM_DISTANCE_MULTIPLIER);
+		} else {
+			BoostersMod.LOGGER.info(
+					"Sodium not detected - Boosters only throttles/culls, it doesn't replace the chunk renderer. "
+							+ "For the biggest FPS gain from world rendering itself, pair Boosters with Sodium.");
 		}
 	}
 
@@ -50,5 +65,18 @@ public final class ModCompat {
 
 	public static boolean shouldDeferEntityCulling() {
 		return entityCullingModPresent && BoostersConfig.get().deferToDedicatedEntityCullingMods;
+	}
+
+	/**
+	 * Multiplier applied to distance thresholds (culling/throttling start distances).
+	 * Below 1.0 when Sodium is present and the user hasn't opted out, pulling every
+	 * threshold closer to the player for extra throttling on top of what Sodium already
+	 * buys on the rendering side.
+	 */
+	public static double distanceMultiplier() {
+		if (sodiumPresent && BoostersConfig.get().extraAggressiveWithSodium) {
+			return SODIUM_DISTANCE_MULTIPLIER;
+		}
+		return 1.0;
 	}
 }

@@ -10,6 +10,10 @@ A Fabric performance mod for Minecraft 26.2:
 - detects installed optimization mods (Sodium, Lithium, C2ME, EntityCulling, Starlight, FerriteCore, Krypton, Noisium) and automatically defers to dedicated solutions (e.g. EntityCulling) instead of duplicating their work
 - live status line on the F3 debug screen showing what it's actually doing right now (throttled/culled counts per second), not just that it's installed
 
+## Pair it with Sodium
+
+Boosters throttles game logic and decides what gets sent to the renderer - it doesn't replace the chunk renderer itself, that's a completely different (and much bigger) undertaking. If you want the biggest FPS gain from world rendering, install [Sodium](https://modrinth.com/mod/sodium) alongside Boosters. They don't overlap: Sodium rewrites how chunks get drawn, Boosters reduces how much game logic and how many entities/particles need to be considered in the first place.
+
 ## In-game settings
 
 - With [Mod Menu](https://modrinth.com/mod/modmenu) installed (requires [Cloth Config API](https://modrinth.com/mod/cloth-config)): Options → Mods → Boosters → Config

@@ -97,9 +97,17 @@ public final class BoostersConfigScreen {
 				.build());
 
 		ConfigCategory compat = builder.getOrCreateCategory(Component.literal("Compatibility"));
+		compat.addEntry(entry.startTextDescription(Component.literal(
+				"Boosters throttles game logic and culls what gets sent to the renderer - it does not replace "
+						+ "the chunk renderer itself. For the biggest FPS gain from world rendering, pair it with Sodium."))
+				.build());
 		compat.addEntry(entry.startBooleanToggle(Component.literal("Defer to other culling mods"), config.deferToDedicatedEntityCullingMods)
 				.setSaveConsumer(v -> config.deferToDedicatedEntityCullingMods = v)
 				.setTooltip(Component.literal("When a dedicated entity culling mod is detected (e.g. EntityCulling), Boosters disables its own to avoid duplicating it."))
+				.build());
+		compat.addEntry(entry.startBooleanToggle(Component.literal("Extra aggressive with Sodium"), config.extraAggressiveWithSodium)
+				.setSaveConsumer(v -> config.extraAggressiveWithSodium = v)
+				.setTooltip(Component.literal("When Sodium is detected, pulls all distance thresholds in by 25% - Sodium removes the GPU bottleneck, so throttling the remaining CPU-side work harder pays off more."))
 				.build());
 
 		ConfigCategory debug = builder.getOrCreateCategory(Component.literal("Debug"));

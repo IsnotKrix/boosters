@@ -1,6 +1,7 @@
 package com.boosters.client.mixin;
 
 import com.boosters.BoostersConfig;
+import com.boosters.compat.ModCompat;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.world.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -22,7 +23,8 @@ public abstract class EntityNameTagCullMixin {
 			return;
 		}
 
-		double cullSq = config.entityDetailCullDistance * config.entityDetailCullDistance;
+		double cullDist = config.entityDetailCullDistance * ModCompat.distanceMultiplier();
+		double cullSq = cullDist * cullDist;
 		if (distanceSq > cullSq) {
 			cir.setReturnValue(false);
 		}

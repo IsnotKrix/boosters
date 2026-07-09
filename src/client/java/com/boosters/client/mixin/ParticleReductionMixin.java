@@ -2,6 +2,7 @@ package com.boosters.client.mixin;
 
 import com.boosters.BoostersConfig;
 import com.boosters.BoostersStats;
+import com.boosters.compat.ModCompat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleEngine;
@@ -33,9 +34,10 @@ public abstract class ParticleReductionMixin {
 		Player player = Minecraft.getInstance().player;
 		if (player != null) {
 			double distSq = player.distanceToSqr(x, y, z);
-			double cullSq = config.particleCullDistance * config.particleCullDistance;
+			double cullDist = config.particleCullDistance * ModCompat.distanceMultiplier();
+			double cullSq = cullDist * cullDist;
 			if (distSq > cullSq) {
-				BoostersStats.particlesDropped.incrementAndGet();
+				BoostersStats.incrementParticlesDropped();
 				cir.setReturnValue(null);
 				return;
 			}
@@ -43,7 +45,7 @@ public abstract class ParticleReductionMixin {
 
 		if (config.particleDensityMultiplier < 1.0
 				&& ThreadLocalRandom.current().nextDouble() >= config.particleDensityMultiplier) {
-			BoostersStats.particlesDropped.incrementAndGet();
+			BoostersStats.incrementParticlesDropped();
 			cir.setReturnValue(null);
 		}
 	}
