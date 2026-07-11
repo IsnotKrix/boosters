@@ -1,6 +1,7 @@
 package com.boosters.client;
 
 import com.boosters.BoostersConfig;
+import com.boosters.BoostersPreset;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
@@ -20,12 +21,45 @@ public final class BoostersConfigScreen {
 	public static Screen build(Screen parent) {
 		BoostersConfig config = BoostersConfig.get();
 
+		// Snapshot the preset at open + a holder the preset dropdown writes into, so the
+		// saving runnable (which runs after every field's save consumer) can decide whether
+		// the user explicitly switched presets or hand-edited a value.
+		BoostersPreset presetAtOpen = config.preset;
+		BoostersPreset[] selectedPreset = { config.preset };
+
 		ConfigBuilder builder = ConfigBuilder.create()
 				.setParentScreen(parent)
 				.setTitle(Component.literal("Boosters"))
-				.setSavingRunnable(BoostersConfig::save);
+				.setSavingRunnable(() -> {
+					BoostersPreset chosen = selectedPreset[0];
+					if (chosen != BoostersPreset.CUSTOM && chosen != presetAtOpen) {
+						// User explicitly picked a different preset - apply its values,
+						// overriding whatever the individual sliders wrote this session.
+						chosen.applyTo(config);
+						config.preset = chosen;
+					} else {
+						// Preset left as-is (or set to Custom): keep the individually edited
+						// values and label the config as whichever preset they still match.
+						config.preset = BoostersPreset.matching(config);
+					}
+					BoostersConfig.save();
+				});
 
 		ConfigEntryBuilder entry = builder.entryBuilder();
+
+		ConfigCategory presets = builder.getOrCreateCategory(Component.literal("Presets"));
+		presets.addEntry(entry.startEnumSelector(Component.literal("Preset"), BoostersPreset.class, config.preset)
+				.setEnumNameProvider(p -> Component.literal(((BoostersPreset) p).displayName()))
+				.setDefaultValue(BoostersPreset.PERFORMANCE)
+				.setSaveConsumer(v -> selectedPreset[0] = v)
+				.setTooltip(Component.literal("Quality = near-vanilla, small gain. Extreme = max FPS, most visible culling. "
+						+ "Pick one and save, then reopen the screen to see the values it applied. "
+						+ "Editing any value by hand switches this to Custom."))
+				.build());
+		presets.addEntry(entry.startTextDescription(Component.literal(
+				"Presets set every distance/interval/density below at once. The individual tabs let you fine-tune "
+						+ "from there (which turns the preset into Custom)."))
+				.build());
 
 		ConfigCategory ai = builder.getOrCreateCategory(Component.literal("Mob AI"));
 		ai.addEntry(entry.startBooleanToggle(Component.literal("Enable AI throttling"), config.enableAiThrottle)
@@ -108,6 +142,14 @@ public final class BoostersConfigScreen {
 		compat.addEntry(entry.startBooleanToggle(Component.literal("Extra aggressive with Sodium"), config.extraAggressiveWithSodium)
 				.setSaveConsumer(v -> config.extraAggressiveWithSodium = v)
 				.setTooltip(Component.literal("When Sodium is detected, pulls all distance thresholds in by 25% - Sodium removes the GPU bottleneck, so throttling the remaining CPU-side work harder pays off more."))
+				.build());
+
+		ConfigCategory memory = builder.getOrCreateCategory(Component.literal("Memory"));
+		memory.addEntry(entry.startBooleanToggle(Component.literal("Cleanup memory when leaving a world"), config.enableMenuMemoryCleanup)
+				.setSaveConsumer(v -> config.enableMenuMemoryCleanup = v)
+				.setTooltip(Component.literal("Releases unused memory back to the OS when you return to the main menu. "
+						+ "Runs only on disconnect, never during gameplay, so it can't cause a stutter. "
+						+ "Modest cleanup - for deep in-game RAM optimization, pair with FerriteCore."))
 				.build());
 
 		ConfigCategory debug = builder.getOrCreateCategory(Component.literal("Debug"));

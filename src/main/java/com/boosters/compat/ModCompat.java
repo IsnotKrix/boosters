@@ -37,9 +37,14 @@ public final class ModCompat {
 		logIfPresent(loader, "lithium", "game logic optimization - Boosters's AI throttle is additive, not a duplicate");
 		logIfPresent(loader, "c2me", "chunk generation/loading - different subsystem, no conflict");
 		logIfPresent(loader, "starlight", "lighting engine - different subsystem, no conflict");
-		logIfPresent(loader, "ferritecore", "RAM usage reduction - different subsystem, no conflict");
+		logIfPresent(loader, "ferritecore", "RAM usage reduction - complements Boosters's menu memory cleanup, no conflict");
 		logIfPresent(loader, "krypton", "networking optimization - different subsystem, no conflict");
 		logIfPresent(loader, "noisium", "terrain noise generation optimization - different subsystem, no conflict");
+		logIfPresent(loader, "modernfix", "mixed startup/memory/rendering optimization - different subsystem, no conflict");
+		logIfPresent(loader, "immediatelyfast", "HUD/text/immediate-mode rendering optimization - different subsystem, no conflict");
+		logIfPresent(loader, "vmp", "server chunk/network throughput optimization - different subsystem, no conflict");
+		logIfPresent(loader, "bobby", "distant chunk caching - different subsystem, no conflict");
+		logIfPresent(loader, "iris", "shaders - different subsystem, no conflict");
 		if (entityCullingModPresent) {
 			BoostersMod.LOGGER.info(
 					"Detected a dedicated entity-culling mod (entityculling) - Boosters is disabling its own entity culling to avoid duplicating it.");
