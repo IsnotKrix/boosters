@@ -1,0 +1,48 @@
+license="${mod_license}"
+
+issueTrackerURL="https://github.com/IsnotKrix/boosters/issues"
+
+[[mods]] #mandatory
+
+modId="${mod_id}" #mandatory
+
+version="${mod_version}" #mandatory
+
+displayName="${mod_name}" #mandatory
+
+displayURL="https://www.curseforge.com/minecraft/mc-mods/boosters"
+
+logoFile="boosters.png"
+
+authors="Kirxishere"
+
+description='''
+Boosts FPS/TPS by throttling distant mob AI, culling entities, throttling block entities and particles - without stepping on Embeddium/EntityCulling's toes.
+'''
+
+[[mixins]]
+config="${mod_id}.mixins.json"
+
+[[mixins]]
+config="${mod_id}.client.mixins.json"
+
+[[dependencies.${mod_id}]] #optional
+    modId="neoforge" #mandatory
+    type="required" #mandatory
+    versionRange="[${neo_version},)" #mandatory
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="minecraft"
+    type="required"
+    versionRange="${minecraft_version_range}"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="cloth_config"
+    type="required"
+    versionRange="[${cloth_config_version},)"
+    ordering="NONE"
+    side="CLIENT"

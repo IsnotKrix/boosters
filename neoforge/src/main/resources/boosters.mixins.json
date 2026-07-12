@@ -1,0 +1,15 @@
+{
+	"required": true,
+	"package": "com.boosters.mixin",
+	"compatibilityLevel": "JAVA_25",
+	"mixins": [
+		"MobAiThrottleMixin",
+		"BlockEntityThrottleMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"overwrites": {
+		"requireAnnotations": true
+	}
+}
