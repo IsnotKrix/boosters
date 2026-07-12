@@ -3,7 +3,9 @@
 
 # Boosters
 
-A Fabric performance mod for Minecraft 26.2:
+A Fabric performance mod for Minecraft 26.2. A NeoForge port with the same feature set lives in [`neoforge/`](neoforge/).
+
+Features:
 
 - one-click presets: **Quality / Balanced / Performance / Extreme** (plus Custom once you tweak anything) - pick how aggressive it is without touching individual sliders
 - throttles AI for distant mobs (configurable distance/intervals)
