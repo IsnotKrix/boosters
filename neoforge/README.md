@@ -6,6 +6,7 @@ A NeoForge port of [Boosters](https://www.curseforge.com/minecraft/mc-mods/boost
 - throttles AI for distant mobs (configurable distance/intervals)
 - client-side culling of off-screen/out-of-range entities + nametags + ground shadows
 - throttles ticking of distant block entities (furnaces, signs, etc. - excluding hoppers/pistons/beacons/conduits/brewing stands/sculk so gameplay logic isn't affected)
+- throttles ticking of distant dropped items and XP orbs (farm/mob-drop piles) - physics, stack merging and despawning still happen, just less often
 - reduces particle count based on distance and density
 - limits the render distance of block entity renderer detail (chests, signs, skulls, banners)
 - optional memory cleanup when you leave a world back to the menu (returns unused RAM to the OS - runs only in the menu, never during gameplay, so no stutter)
