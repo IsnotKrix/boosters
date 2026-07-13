@@ -74,17 +74,16 @@ jobs:
         with:
           name: neoforge-jar
           path: dist/neoforge
-      - name: rename jars to avoid filename collision
-        run: |
-          mkdir -p dist/release
-          mv dist/fabric/*.jar "dist/release/boosters-${{ github.ref_name }}-fabric.jar"
-          mv dist/neoforge/*.jar "dist/release/boosters-${{ github.ref_name }}-neoforge.jar"
+      # No renaming needed: the jar task in each build.gradle already names its
+      # output "boosters-<mod version>+<minecraft version>-<loader>.jar" (matching
+      # the F3 status line format), so the two files can't collide by name.
       - name: create github release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release create "${{ github.ref_name }}" \
-            dist/release/*.jar \
+            dist/fabric/*.jar \
+            dist/neoforge/*.jar \
             --repo "${{ github.repository }}" \
             --title "Boosters ${{ github.ref_name }}" \
             --generate-notes

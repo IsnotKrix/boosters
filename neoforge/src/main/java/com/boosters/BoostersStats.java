@@ -20,11 +20,13 @@ public final class BoostersStats {
 
 	private static volatile int aiStepsSkipped;
 	private static volatile int blockEntityTicksSkipped;
+	private static volatile int itemTicksSkipped;
 	private static volatile int entitiesCulled;
 	private static volatile int particlesDropped;
 
 	private static volatile int aiStepsSkippedPerSecond;
 	private static volatile int blockEntityTicksSkippedPerSecond;
+	private static volatile int itemTicksSkippedPerSecond;
 	private static volatile int entitiesCulledPerSecond;
 	private static volatile int particlesDroppedPerSecond;
 
@@ -34,6 +36,10 @@ public final class BoostersStats {
 
 	public static void incrementBlockEntityTicksSkipped() {
 		blockEntityTicksSkipped++;
+	}
+
+	public static void incrementItemTicksSkipped() {
+		itemTicksSkipped++;
 	}
 
 	public static void incrementEntitiesCulled() {
@@ -47,10 +53,12 @@ public final class BoostersStats {
 	public static void snapshotAndReset() {
 		aiStepsSkippedPerSecond = aiStepsSkipped;
 		blockEntityTicksSkippedPerSecond = blockEntityTicksSkipped;
+		itemTicksSkippedPerSecond = itemTicksSkipped;
 		entitiesCulledPerSecond = entitiesCulled;
 		particlesDroppedPerSecond = particlesDropped;
 		aiStepsSkipped = 0;
 		blockEntityTicksSkipped = 0;
+		itemTicksSkipped = 0;
 		entitiesCulled = 0;
 		particlesDropped = 0;
 	}
@@ -61,6 +69,10 @@ public final class BoostersStats {
 
 	public static int blockEntityTicksSkippedPerSecond() {
 		return blockEntityTicksSkippedPerSecond;
+	}
+
+	public static int itemTicksSkippedPerSecond() {
+		return itemTicksSkippedPerSecond;
 	}
 
 	public static int entitiesCulledPerSecond() {

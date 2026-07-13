@@ -4,6 +4,7 @@ import com.boosters.BoostersConfig;
 import com.boosters.BoostersStats;
 import com.boosters.compat.ModCompat;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.SharedConstants;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.DebugScreenOverlay;
 import org.spongepowered.asm.mixin.Mixin;
@@ -37,15 +38,18 @@ public abstract class DebugScreenStatusMixin {
 	// Computed once and cached - looking this up is cheap, but extractLines runs every
 	// rendered frame, and a mod-container lookup has no reason to happen more than once.
 	@Unique
-	private static String boosters$version;
+	private static String boosters$versionLine;
 
-	private static String boosters$version() {
-		if (boosters$version == null) {
-			boosters$version = FabricLoader.getInstance().getModContainer("boosters")
+	// "boosters <mod version>+<minecraft version>-fabric", e.g. "boosters 1.2.0+26.2-fabric".
+	private static String boosters$versionLine() {
+		if (boosters$versionLine == null) {
+			String modVersion = FabricLoader.getInstance().getModContainer("boosters")
 					.map(c -> c.getMetadata().getVersion().getFriendlyString())
 					.orElse("?");
+			String mcVersion = SharedConstants.getCurrentVersion().name();
+			boosters$versionLine = "boosters " + modVersion + "+" + mcVersion + "-fabric";
 		}
-		return boosters$version;
+		return boosters$versionLine;
 	}
 
 	@Inject(method = "extractLines", at = @At("HEAD"))
@@ -56,9 +60,10 @@ public abstract class DebugScreenStatusMixin {
 		}
 
 		lines.add("");
-		lines.add("[Boosters] v" + boosters$version() + " (Fabric) - preset: " + BoostersConfig.get().preset.displayName());
+		lines.add("[Boosters] " + boosters$versionLine() + " - preset: " + BoostersConfig.get().preset.displayName());
 		lines.add("[Boosters] AI throttled: " + BoostersStats.aiStepsSkippedPerSecond() + "/s, "
 				+ "block entities throttled: " + BoostersStats.blockEntityTicksSkippedPerSecond() + "/s");
+		lines.add("[Boosters] Items/XP orbs throttled: " + BoostersStats.itemTicksSkippedPerSecond() + "/s");
 		lines.add("[Boosters] Entities culled: " + BoostersStats.entitiesCulledPerSecond() + "/s, "
 				+ "particles dropped: " + BoostersStats.particlesDroppedPerSecond() + "/s");
 		lines.add("[Boosters] Detected: " + ModCompat.detectedModsSummary()

@@ -51,6 +51,13 @@ public final class BoostersConfig {
 	public List<String> blockEntityThrottleExcludeTypes = Arrays.asList(
 			"hopper", "piston", "beacon", "conduit", "brewing_stand", "sculk_sensor", "sculk_shrieker");
 
+	// --- Dropped item / XP orb tick throttling (server/logic side) ---
+	public boolean enableItemThrottle = true;
+	/** Distance from the nearest player (blocks) at which item/orb throttling starts kicking in. */
+	public int itemThrottleStartDistance = 32;
+	/** How many ticks between updates for the farthest items/orbs (at/beyond 3x the start distance). */
+	public int itemThrottleIntervalTicks = 6;
+
 	// --- Particle reduction (client-side) ---
 	public boolean enableParticleReduction = true;
 	/** Fraction of particles that are actually allowed to spawn, 0.0-1.0. */
