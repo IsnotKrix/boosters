@@ -1,13 +1,15 @@
-# Automatically build the project and run any configured tests for every push
-# and submitted pull request. This can help catch issues that only occur on
-# certain platforms or Java versions, and provides a first line of defence
-# against bad commits.
+# Automatically build both loader ports (Fabric and NeoForge) and run any
+# configured tests for every push and submitted pull request. This can help
+# catch issues that only occur on certain platforms or Java versions, and
+# provides a first line of defence against bad commits - and against one
+# loader's port drifting out of sync with the other.
 
 name: build
 on: [pull_request, push]
 
 jobs:
-  build:
+  build-fabric:
+    name: build (Fabric)
     runs-on: ubuntu-24.04
     steps:
       - name: checkout repository
@@ -26,5 +28,30 @@ jobs:
       - name: capture build artifacts
         uses: actions/upload-artifact@v7
         with:
-          name: Artifacts
+          name: boosters-fabric
           path: build/libs/
+
+  build-neoforge:
+    name: build (NeoForge)
+    runs-on: ubuntu-24.04
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v6
+      # wrapper-validation in the Fabric job above already scans the whole repo
+      # (including neoforge/gradle/wrapper), so it isn't repeated here.
+      - name: setup jdk
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'microsoft'
+      - name: make gradle wrapper executable
+        working-directory: neoforge
+        run: chmod +x ./gradlew
+      - name: build
+        working-directory: neoforge
+        run: ./gradlew build
+      - name: capture build artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: boosters-neoforge
+          path: neoforge/build/libs/
