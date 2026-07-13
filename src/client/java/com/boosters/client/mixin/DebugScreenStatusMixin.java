@@ -2,10 +2,13 @@ package com.boosters.client.mixin;
 
 import com.boosters.BoostersConfig;
 import com.boosters.BoostersStats;
+import com.boosters.compat.ModCompat;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.DebugScreenOverlay;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -31,6 +34,20 @@ public abstract class DebugScreenStatusMixin {
 	@Shadow
 	public abstract boolean showDebugScreen();
 
+	// Computed once and cached - looking this up is cheap, but extractLines runs every
+	// rendered frame, and a mod-container lookup has no reason to happen more than once.
+	@Unique
+	private static String boosters$version;
+
+	private static String boosters$version() {
+		if (boosters$version == null) {
+			boosters$version = FabricLoader.getInstance().getModContainer("boosters")
+					.map(c -> c.getMetadata().getVersion().getFriendlyString())
+					.orElse("?");
+		}
+		return boosters$version;
+	}
+
 	@Inject(method = "extractLines", at = @At("HEAD"))
 	private void boosters$appendStatusLine(GuiGraphicsExtractor extractor, List<String> lines, boolean isLeftColumn,
 			CallbackInfo ci) {
@@ -39,9 +56,12 @@ public abstract class DebugScreenStatusMixin {
 		}
 
 		lines.add("");
+		lines.add("[Boosters] v" + boosters$version() + " (Fabric) - preset: " + BoostersConfig.get().preset.displayName());
 		lines.add("[Boosters] AI throttled: " + BoostersStats.aiStepsSkippedPerSecond() + "/s, "
 				+ "block entities throttled: " + BoostersStats.blockEntityTicksSkippedPerSecond() + "/s");
 		lines.add("[Boosters] Entities culled: " + BoostersStats.entitiesCulledPerSecond() + "/s, "
 				+ "particles dropped: " + BoostersStats.particlesDroppedPerSecond() + "/s");
+		lines.add("[Boosters] Detected: " + ModCompat.detectedModsSummary()
+				+ " - entity culling deferred: " + (ModCompat.shouldDeferEntityCulling() ? "yes" : "no"));
 	}
 }
