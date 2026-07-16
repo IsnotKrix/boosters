@@ -22,7 +22,7 @@ public abstract class EntityShadowCullMixin {
 	@Inject(method = "getShadowRadius", at = @At("HEAD"), cancellable = true)
 	private void boosters$cullDistantShadows(EntityRenderState state, CallbackInfoReturnable<Float> cir) {
 		BoostersConfig config = BoostersConfig.get();
-		if (!config.enableEntityCulling) {
+		if (!config.enabled || !config.enableEntityCulling) {
 			return;
 		}
 

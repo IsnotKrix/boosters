@@ -22,7 +22,7 @@ public interface BlockEntityRendererDistanceMixin {
 	@Inject(method = "getViewDistance", at = @At("HEAD"), cancellable = true)
 	private void boosters$scaleViewDistance(CallbackInfoReturnable<Integer> cir) {
 		BoostersConfig config = BoostersConfig.get();
-		if (!config.enableBlockEntityRendererCulling) {
+		if (!config.enabled || !config.enableBlockEntityRendererCulling) {
 			return;
 		}
 

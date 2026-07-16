@@ -19,6 +19,9 @@ public final class BoostersConfig {
 
 	private static BoostersConfig instance = new BoostersConfig();
 
+	/** Master switch. When off, every throttle/cull mixin below is a no-op, regardless of its own toggle. */
+	public boolean enabled = true;
+
 	// --- Active preset (Quality/Balanced/Performance/Extreme, or Custom) ---
 	public BoostersPreset preset = BoostersPreset.PERFORMANCE;
 
@@ -79,14 +82,6 @@ public final class BoostersConfig {
 	 * bottleneck, so throttling the CPU-side work harder pays off more with it installed.
 	 */
 	public boolean extraAggressiveWithSodium = true;
-
-	// --- Memory ---
-	/**
-	 * When leaving a world back to the main menu, hint the JVM to release unused memory
-	 * back to the OS. Runs only on disconnect (never during gameplay), so it can't cause
-	 * an in-game stutter. This is a modest cleanup, not a magic "more RAM = more FPS" trick.
-	 */
-	public boolean enableMenuMemoryCleanup = true;
 
 	// --- F3 debug screen status line ---
 	public boolean showF3Status = true;

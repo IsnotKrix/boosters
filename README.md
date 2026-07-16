@@ -8,13 +8,12 @@ A Fabric performance mod for Minecraft 26.2. A NeoForge port with the same featu
 Features:
 
 - one-click presets: **Quality / Balanced / Performance / Extreme** (plus Custom once you tweak anything) - pick how aggressive it is without touching individual sliders
-- throttles AI for distant mobs (configurable distance/intervals)
-- client-side culling of off-screen/out-of-range entities + nametags + ground shadows
-- throttles ticking of distant block entities (furnaces, signs, etc. - excluding hoppers/pistons/beacons/conduits/brewing stands/sculk so gameplay logic isn't affected)
+- throttles AI for distant mobs beyond what vanilla already does (configurable distance/intervals) - benefit scales with mob density, biggest with farms/villages/mob clusters, marginal for a lone player with few mobs around
+- adds a hard distance cutoff for entity rendering (nametags + ground shadows included) on top of vanilla's existing off-screen/frustum culling
+- throttles ticking of distant block entities (furnaces, signs, etc. - excluding hoppers/pistons/beacons/conduits/brewing stands/sculk so gameplay logic isn't affected) - not something vanilla does on its own
 - throttles ticking of distant dropped items and XP orbs (farm/mob-drop piles) - physics, stack merging and despawning still happen, just less often
-- reduces particle count based on distance and density
-- limits the render distance of block entity renderer detail (chests, signs, skulls, banners)
-- optional memory cleanup when you leave a world back to the menu (returns unused RAM to the OS - runs only in the menu, never during gameplay, so no stutter)
+- reduces particle count by distance and density, stacking with (not replacing) vanilla's own Particles video setting
+- limits the render distance of block entity renderer detail (chests, signs, skulls, banners) - not configurable in vanilla
 - detects installed optimization mods (Sodium, Lithium, C2ME, EntityCulling, Starlight, FerriteCore, Krypton, Noisium, ModernFix, ImmediatelyFast, VMP, Bobby, Iris) and automatically defers to dedicated solutions (e.g. EntityCulling) instead of duplicating their work
 - automatically pulls thresholds in further when Sodium is detected, since Sodium removes the GPU bottleneck and makes the CPU-side throttling pay off more
 - live status line on the F3 debug screen showing what it's actually doing right now (throttled/culled counts per second), not just that it's installed

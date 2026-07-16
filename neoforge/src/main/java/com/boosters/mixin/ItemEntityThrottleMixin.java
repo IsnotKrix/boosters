@@ -39,7 +39,7 @@ public abstract class ItemEntityThrottleMixin {
 	@Inject(method = "tick", at = @At("HEAD"), cancellable = true)
 	private void boosters$throttleTick(CallbackInfo ci) {
 		BoostersConfig config = BoostersConfig.get();
-		if (!config.enableItemThrottle) {
+		if (!config.enabled || !config.enableItemThrottle) {
 			return;
 		}
 

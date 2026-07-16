@@ -44,7 +44,7 @@ public final class ModCompat {
 
 		checkMod(mods, "embeddium", "Embeddium");
 		checkMod(mods, "entityculling", "EntityCulling");
-		logIfPresent(mods, "ferritecore", "FerriteCore", "RAM usage reduction - complements Boosters's menu memory cleanup, no conflict");
+		logIfPresent(mods, "ferritecore", "FerriteCore", "RAM usage reduction - different subsystem, no conflict");
 		logIfPresent(mods, "krypton", "Krypton", "networking optimization - different subsystem, no conflict");
 		logIfPresent(mods, "noisium", "Noisium", "terrain noise generation optimization - different subsystem, no conflict");
 		logIfPresent(mods, "modernfix", "ModernFix", "mixed startup/memory/rendering optimization - different subsystem, no conflict");

@@ -41,7 +41,7 @@ public abstract class MobAiThrottleMixin {
 	@Inject(method = "serverAiStep", at = @At("HEAD"), cancellable = true)
 	private void boosters$throttleAiStep(CallbackInfo ci) {
 		BoostersConfig config = BoostersConfig.get();
-		if (!config.enableAiThrottle) {
+		if (!config.enabled || !config.enableAiThrottle) {
 			return;
 		}
 
