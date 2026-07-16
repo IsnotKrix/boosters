@@ -59,8 +59,15 @@ public abstract class DebugScreenStatusMixin {
 			return;
 		}
 
+		BoostersConfig config = BoostersConfig.get();
+		if (!config.enabled) {
+			lines.add("");
+			lines.add("[Boosters] " + boosters$versionLine() + " - disabled (master switch off)");
+			return;
+		}
+
 		lines.add("");
-		lines.add("[Boosters] " + boosters$versionLine() + " - preset: " + BoostersConfig.get().preset.displayName());
+		lines.add("[Boosters] " + boosters$versionLine() + " - preset: " + config.preset.displayName());
 		lines.add("[Boosters] AI throttled: " + BoostersStats.aiStepsSkippedPerSecond() + "/s, "
 				+ "block entities throttled: " + BoostersStats.blockEntityTicksSkippedPerSecond() + "/s");
 		lines.add("[Boosters] Items/XP orbs throttled: " + BoostersStats.itemTicksSkippedPerSecond() + "/s");

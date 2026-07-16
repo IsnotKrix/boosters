@@ -10,7 +10,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
@@ -53,17 +52,6 @@ public class BoostersModClient {
 		if (++statsTickCounter >= 20) {
 			statsTickCounter = 0;
 			BoostersStats.snapshotAndReset();
-		}
-	}
-
-	// Honest "RAM optimizer": when the player leaves a world back to the menu, hint the JVM
-	// to release the now-unused world/chunk/entity memory back to the OS. Fires only on
-	// disconnect - never during gameplay - so it can't cause an in-game stutter.
-	@SubscribeEvent
-	static void onLoggingOut(ClientPlayerNetworkEvent.LoggingOut event) {
-		if (BoostersConfig.get().enableMenuMemoryCleanup) {
-			System.gc();
-			BoostersMod.LOGGER.info("Left world - hinted a memory cleanup to return unused RAM to the OS.");
 		}
 	}
 }

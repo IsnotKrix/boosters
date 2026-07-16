@@ -47,7 +47,7 @@ public final class ModCompat {
 		logIfPresent(loader, "lithium", "Lithium", "game logic optimization - Boosters's AI throttle is additive, not a duplicate");
 		logIfPresent(loader, "c2me", "C2ME", "chunk generation/loading - different subsystem, no conflict");
 		logIfPresent(loader, "starlight", "Starlight", "lighting engine - different subsystem, no conflict");
-		logIfPresent(loader, "ferritecore", "FerriteCore", "RAM usage reduction - complements Boosters's menu memory cleanup, no conflict");
+		logIfPresent(loader, "ferritecore", "FerriteCore", "RAM usage reduction - different subsystem, no conflict");
 		logIfPresent(loader, "krypton", "Krypton", "networking optimization - different subsystem, no conflict");
 		logIfPresent(loader, "noisium", "Noisium", "terrain noise generation optimization - different subsystem, no conflict");
 		logIfPresent(loader, "modernfix", "ModernFix", "mixed startup/memory/rendering optimization - different subsystem, no conflict");

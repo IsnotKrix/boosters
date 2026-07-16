@@ -51,7 +51,7 @@ public abstract class BlockEntityThrottleMixin {
 	@Inject(method = "tick", at = @At("HEAD"), cancellable = true)
 	private void boosters$throttleTick(CallbackInfo ci) {
 		BoostersConfig config = BoostersConfig.get();
-		if (!config.enableBlockEntityThrottle) {
+		if (!config.enabled || !config.enableBlockEntityThrottle) {
 			return;
 		}
 

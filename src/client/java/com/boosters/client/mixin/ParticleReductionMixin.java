@@ -27,7 +27,7 @@ public abstract class ParticleReductionMixin {
 	private void boosters$reduceParticles(ParticleOptions options, double x, double y, double z,
 			double dx, double dy, double dz, CallbackInfoReturnable<Particle> cir) {
 		BoostersConfig config = BoostersConfig.get();
-		if (!config.enableParticleReduction) {
+		if (!config.enabled || !config.enableParticleReduction) {
 			return;
 		}
 

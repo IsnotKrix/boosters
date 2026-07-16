@@ -19,7 +19,7 @@ public abstract class EntityNameTagCullMixin {
 	@Inject(method = "shouldShowName", at = @At("HEAD"), cancellable = true)
 	private void boosters$cullDistantNameTags(Entity entity, double distanceSq, CallbackInfoReturnable<Boolean> cir) {
 		BoostersConfig config = BoostersConfig.get();
-		if (!config.enableEntityCulling) {
+		if (!config.enabled || !config.enableEntityCulling) {
 			return;
 		}
 

@@ -17,7 +17,7 @@ logoFile="boosters.png"
 authors="Kirxishere"
 
 description='''
-Boosts FPS/TPS by throttling distant mob AI, culling entities, throttling block entities and particles - without stepping on Embeddium/EntityCulling's toes.
+Throttles distant mob AI, item/XP orb ticking, and block entities, and adds extra distance-based culling for entities and particles on top of what vanilla already does. Most noticeable in farms, bases, and other high-entity-density areas; doesn't replace your chunk renderer (pair with Embeddium for that). Compatible with EntityCulling.
 '''
 
 [[mixins]]

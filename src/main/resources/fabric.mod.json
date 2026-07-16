@@ -3,7 +3,7 @@
 	"id": "boosters",
 	"version": "${version}",
 	"name": "Boosters",
-	"description": "Boosts FPS/TPS by throttling distant mob AI, culling entities, throttling block entities and particles - without stepping on Sodium/Lithium/EntityCulling's toes.",
+	"description": "Throttles distant mob AI, item/XP orb ticking, and block entities, and adds extra distance-based culling for entities and particles on top of what vanilla already does. Most noticeable in farms, bases, and other high-entity-density areas; doesn't replace your chunk renderer (pair with Sodium for that). Compatible with Lithium/EntityCulling.",
 	"authors": [
 		"Kirxishere"
 	],

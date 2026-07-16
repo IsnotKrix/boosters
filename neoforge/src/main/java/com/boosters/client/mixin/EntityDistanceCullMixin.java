@@ -24,7 +24,7 @@ public abstract class EntityDistanceCullMixin {
 	private void boosters$cullDistantEntities(Entity entity, Frustum frustum, double camX, double camY, double camZ,
 			CallbackInfoReturnable<Boolean> cir) {
 		BoostersConfig config = BoostersConfig.get();
-		if (!config.enableEntityCulling || ModCompat.shouldDeferEntityCulling()) {
+		if (!config.enabled || !config.enableEntityCulling || ModCompat.shouldDeferEntityCulling()) {
 			return;
 		}
 

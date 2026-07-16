@@ -5,8 +5,10 @@ import com.boosters.BoostersPreset;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,7 +22,15 @@ import java.util.Arrays;
  * not just on the preset selector.
  */
 public final class BoostersConfigScreen {
+
+	private static final Style NOTE_STYLE = Style.EMPTY.withColor(ChatFormatting.GRAY).withItalic(true);
+
 	private BoostersConfigScreen() {
+	}
+
+	/** Wraps informational/honesty-qualifier text (as opposed to action items) in a consistent, muted style. */
+	private static Component note(String text) {
+		return Component.literal(text).setStyle(NOTE_STYLE);
 	}
 
 	public static Screen build(Screen parent) {
@@ -34,8 +44,11 @@ public final class BoostersConfigScreen {
 
 		ConfigBuilder builder = ConfigBuilder.create()
 				.setParentScreen(parent)
-				.setTitle(Component.literal("Boosters"))
+				.setTitle(Component.literal("Boosters").withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD))
 				.setTransparentBackground(true)
+				.setAlwaysShowTabs(true)
+				.setShouldTabsSmoothScroll(true)
+				.setShouldListSmoothScroll(true)
 				.setSavingRunnable(() -> {
 					BoostersPreset chosen = selectedPreset[0];
 					if (chosen != BoostersPreset.CUSTOM && chosen != presetAtOpen) {
@@ -54,6 +67,12 @@ public final class BoostersConfigScreen {
 		ConfigEntryBuilder entry = builder.entryBuilder();
 
 		ConfigCategory presets = builder.getOrCreateCategory(Component.literal("Presets"));
+		presets.addEntry(entry.startBooleanToggle(Component.literal("Enable Boosters"), config.enabled)
+				.setDefaultValue(true)
+				.setSaveConsumer(v -> config.enabled = v)
+				.setTooltip(Component.literal("Master switch. Turns every throttle/culling feature below off at once, "
+						+ "regardless of their individual settings - useful for quickly A/B testing or troubleshooting."))
+				.build());
 		presets.addEntry(entry.startEnumSelector(Component.literal("Preset"), BoostersPreset.class, config.preset)
 				.setEnumNameProvider(p -> Component.literal(((BoostersPreset) p).displayName()))
 				.setDefaultValue(BoostersPreset.PERFORMANCE)
@@ -62,12 +81,18 @@ public final class BoostersConfigScreen {
 						+ "Pick one and save, then reopen the screen to see the values it applied. "
 						+ "Editing any value by hand switches this to Custom."))
 				.build());
-		presets.addEntry(entry.startTextDescription(Component.literal(
+		presets.addEntry(entry.startTextDescription(note(
 				"Presets set every distance/interval/density below at once. The individual tabs let you fine-tune "
 						+ "from there (which turns the preset into Custom)."))
 				.build());
 
 		ConfigCategory ai = builder.getOrCreateCategory(Component.literal("Mob AI"));
+		ai.addEntry(entry.startTextDescription(note(
+				"Vanilla already skips ticking mobs outside simulation distance and already staggers some AI work. "
+						+ "This adds a more aggressive, distance-graduated throttle on top. The benefit scales with how "
+						+ "many mobs are nearby - farms/villages/mob clusters see the most gain; a lone player exploring "
+						+ "with few mobs around will notice little to nothing."))
+				.build());
 		ai.addEntry(entry.startBooleanToggle(Component.literal("Enable AI throttling"), config.enableAiThrottle)
 				.setDefaultValue(true)
 				.setSaveConsumer(v -> config.enableAiThrottle = v)
@@ -95,10 +120,15 @@ public final class BoostersConfigScreen {
 				.build());
 
 		ConfigCategory entities = builder.getOrCreateCategory(Component.literal("Entity Rendering"));
+		entities.addEntry(entry.startTextDescription(note(
+				"Vanilla already skips rendering entities outside your view frustum (behind you, off-screen). "
+						+ "This adds a hard distance cutoff on top, regardless of whether the entity is in view - useful "
+						+ "when you're looking toward a farm/base with a lot of entities loaded at once."))
+				.build());
 		entities.addEntry(entry.startBooleanToggle(Component.literal("Enable entity culling"), config.enableEntityCulling)
 				.setDefaultValue(true)
 				.setSaveConsumer(v -> config.enableEntityCulling = v)
-				.setTooltip(Component.literal("Stops rendering entities beyond the max render distance below."))
+				.setTooltip(Component.literal("Stops rendering entities beyond the max render distance below, even if they're in view."))
 				.build());
 		entities.addEntry(entry.startDoubleField(Component.literal("Max render distance"), config.entityCullingMaxDistance)
 				.setMin(8.0).setMax(512.0)
@@ -154,6 +184,11 @@ public final class BoostersConfigScreen {
 				.build());
 
 		ConfigCategory particles = builder.getOrCreateCategory(Component.literal("Particles"));
+		particles.addEntry(entry.startTextDescription(note(
+				"Works alongside vanilla's own Particles video setting (All/Decreased/Minimal), not instead of it - "
+						+ "if you already run Minimal, the extra effect here will be smaller. This adds a distance cutoff "
+						+ "vanilla's setting doesn't have, on top of the density reduction."))
+				.build());
 		particles.addEntry(entry.startBooleanToggle(Component.literal("Enable particle reduction"), config.enableParticleReduction)
 				.setDefaultValue(true)
 				.setSaveConsumer(v -> config.enableParticleReduction = v)
@@ -186,7 +221,7 @@ public final class BoostersConfigScreen {
 				.build());
 
 		ConfigCategory compat = builder.getOrCreateCategory(Component.literal("Compatibility"));
-		compat.addEntry(entry.startTextDescription(Component.literal(
+		compat.addEntry(entry.startTextDescription(note(
 				"Boosters throttles game logic and culls what gets sent to the renderer - it does not replace "
 						+ "the chunk renderer itself. For the biggest FPS gain from world rendering, pair it with Sodium."))
 				.build());
@@ -199,15 +234,6 @@ public final class BoostersConfigScreen {
 				.setDefaultValue(true)
 				.setSaveConsumer(v -> config.extraAggressiveWithSodium = v)
 				.setTooltip(Component.literal("When Sodium is detected, pulls all distance thresholds in by 25% - Sodium removes the GPU bottleneck, so throttling the remaining CPU-side work harder pays off more."))
-				.build());
-
-		ConfigCategory memory = builder.getOrCreateCategory(Component.literal("Memory"));
-		memory.addEntry(entry.startBooleanToggle(Component.literal("Cleanup memory when leaving a world"), config.enableMenuMemoryCleanup)
-				.setDefaultValue(true)
-				.setSaveConsumer(v -> config.enableMenuMemoryCleanup = v)
-				.setTooltip(Component.literal("Releases unused memory back to the OS when you return to the main menu. "
-						+ "Runs only on disconnect, never during gameplay, so it can't cause a stutter. "
-						+ "Modest cleanup - for deep in-game RAM optimization, pair with FerriteCore."))
 				.build());
 
 		ConfigCategory debug = builder.getOrCreateCategory(Component.literal("Debug"));
